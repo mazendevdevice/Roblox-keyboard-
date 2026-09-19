@@ -1,0 +1,452 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Keyboard Speed - Admin Abuse Edition</title>
+    <style>
+        :root {
+            --bg-color: #12131C;
+            --card-bg: #1E202D;
+            --accent-green: #00E676;
+            --accent-purple: #7C4DFF;
+            --accent-red: #FF5252;
+            --accent-gold: #FFD700;
+            --text-color: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* شريط الحدث النشط */
+        .event-banner {
+            width: 100%;
+            max-width: 600px;
+            background: linear-gradient(90deg, #ff8c00, #e52e71);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: none;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        header h1 {
+            color: var(--accent-green);
+            font-size: 2rem;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 10px;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #33364A;
+            margin: 15px 0;
+            width: 100%;
+            max-width: 600px;
+            justify-content: space-around;
+        }
+
+        .stat-item { text-align: center; }
+        .stat-title { font-size: 0.8rem; color: #AAA; }
+        .stat-value { font-size: 1.3rem; font-weight: bold; color: var(--accent-green); }
+
+        .game-card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #33364A;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .target-word {
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            color: var(--accent-gold);
+            background: #12131C;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            word-break: break-all;
+        }
+
+        .input-box {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            border: 2px solid #33364A;
+            background: #12131C;
+            color: #FFF;
+            text-align: center;
+            outline: none;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background: #12131C;
+            height: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--accent-green);
+            transition: width 0.1s;
+        }
+
+        .btn {
+            background: var(--accent-green);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .admin-btn {
+            background: var(--accent-purple);
+            color: #FFF;
+            margin-top: 15px;
+        }
+
+        /* الغرفة السرية */
+        .secret-room {
+            display: none;
+            margin-top: 20px;
+            background: #251338;
+            border: 2px dashed var(--accent-gold);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .secret-room h3 {
+            color: var(--accent-gold);
+            margin-bottom: 10px;
+        }
+
+        /* لوحة الأدمن */
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .admin-content {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 2px solid var(--accent-purple);
+        }
+
+        .admin-section {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #33364A;
+            padding-bottom: 10px;
+        }
+
+        .admin-section h4 {
+            color: var(--accent-gold);
+            margin-bottom: 8px;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .admin-grid button {
+            background: #2A2D3E;
+            color: #FFF;
+            border: 1px solid var(--accent-purple);
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .admin-grid button:hover {
+            background: var(--accent-purple);
+        }
+
+        .close-btn {
+            background: var(--accent-red) !important;
+            color: #FFF !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- التنبيه بالحدث -->
+    <div class="event-banner" id="eventBanner">🔥 حدث نشط: مضاعف السرعة x5 مفعّل للجميع! 🔥</div>
+
+    <header>
+        <h1>⌨️ Roblox Keyboard Speed</h1>
+        <p>اكتب واجمع السرعة للوصول للمراحل العليا!</p>
+    </header>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-title">المرحلة</div>
+            <div class="stat-value" id="lvlVal">1</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-title">السرعة (+Speed)</div>
+            <div class="stat-value" id="speedVal">0</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-title">المضاعف</div>
+            <div class="stat-value" id="multVal">1x</div>
+        </div>
+    </div>
+
+    <div class="game-card">
+        <div class="target-word" id="targetWord">...</div>
+        <input type="text" id="userInput" class="input-box" placeholder="اكتب الكلمة هنا..." autocomplete="off">
+        
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- المنطقة السرية (تظهر بالأدمن فقط) -->
+        <div class="secret-room" id="secretRoom">
+            <h3>👑 الغرفة السرية للـ Admin 👑</h3>
+            <p>لقد فتحت المكان السري! مكافأة سرعة مجانية لك:</p>
+            <button class="btn" style="background: var(--accent-gold);" onclick="claimSecretBonus()">🏆 استلام +50,000 السرعة السرية</button>
+        </div>
+
+        <button class="btn admin-btn" onclick="openAdminModal()">⚡ لوحة التحكم (Admin Abuse)</button>
+    </div>
+
+    <!-- نافذة الأدمن -->
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-content">
+            <h2>👑 Admin Abuse Panel</h2>
+            <div id="adminAuth">
+                <input type="password" id="adminPass" class="input-box" placeholder="كلمة السر الخاصة">
+                <button class="btn" onclick="authenticateAdmin()">دخول</button>
+            </div>
+
+            <div id="adminPanel" style="display: none;">
+                <!-- قسم الأحداث -->
+                <div class="admin-section">
+                    <h4>🎉 إغراق السيرفر بالأحداث (Events)</h4>
+                    <div class="admin-grid">
+                        <button onclick="triggerEvent('2x Speed Event', 2)">تفعيل حدث x2</button>
+                        <button onclick="triggerEvent('MEGA x10 Event', 10)">تفعيل حدث MEGA x10</button>
+                        <button onclick="stopEvent()">إلغاء الحدث الحالي</button>
+                    </div>
+                </div>
+
+                <!-- قسم الأماكن السرية -->
+                <div class="admin-section">
+                    <h4>🚪 فتح الأماكن السرية (Secret Areas)</h4>
+                    <div class="admin-grid">
+                        <button onclick="toggleSecretRoom()">فتح / إغلاق الغرفة السرية</button>
+                    </div>
+                </div>
+
+                <!-- قسم مضاعفات السرعة -->
+                <div class="admin-section">
+                    <h4>🚀 مضاعفات السرعة الخارقة (Multipliers)</h4>
+                    <div class="admin-grid">
+                        <button onclick="adminSetMultiplier(5)">مضاعف x5</button>
+                        <button onclick="adminSetMultiplier(100)">مضاعف x100</button>
+                        <button onclick="adminSetMultiplier(1000)">مضاعف x1000 (God)</button>
+                    </div>
+                </div>
+
+                <!-- قسم إضافة السرعة والمراحل -->
+                <div class="admin-section">
+                    <h4>⚡ إضافة سرعة وتخطي</h4>
+                    <div class="admin-grid">
+                        <button onclick="adminAddSpeed(1000)">+1,000 Speed</button>
+                        <button onclick="adminAddSpeed(100000)">+100,000 Speed</button>
+                        <button onclick="adminSkipLevel()">تخطي المرحلة</button>
+                        <button onclick="adminReset()">تصفير النقاط</button>
+                    </div>
+                </div>
+
+                <button class="btn close-btn" onclick="closeAdminModal()">إغلاق اللوحة</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const levelWords = [
+            ["A", "S", "D", "F", "J", "K", "L"],
+            ["ROBLOX", "KEYBOARD", "SPEED", "MM2"],
+            ["MAZEN", "ADMIN", "ABUSE", "GODMODE"],
+            ["ULTIMATE_SPEED_RUNNER_2026"]
+        ];
+
+        let currentLevel = 1;
+        let speed = 0;
+        let baseMultiplier = 1;
+        let eventMultiplier = 1;
+        let wordIndex = 0;
+
+        const targetWordEl = document.getElementById('targetWord');
+        const userInputEl = document.getElementById('userInput');
+        const speedValEl = document.getElementById('speedVal');
+        const lvlValEl = document.getElementById('lvlVal');
+        const multValEl = document.getElementById('multVal');
+        const progressBarEl = document.getElementById('progressBar');
+
+        function loadWord() {
+            const words = levelWords[Math.min(currentLevel - 1, levelWords.length - 1)];
+            targetWordEl.innerText = words[wordIndex % words.length];
+            userInputEl.value = "";
+            updateProgressBar();
+        }
+
+        userInputEl.addEventListener('input', () => {
+            const currentTarget = targetWordEl.innerText;
+            const typed = userInputEl.value;
+
+            if (currentTarget.startsWith(typed)) {
+                speed += 1 * (baseMultiplier * eventMultiplier);
+                speedValEl.innerText = speed;
+            }
+
+            if (typed === currentTarget) {
+                speed += 20 * (baseMultiplier * eventMultiplier);
+                speedValEl.innerText = speed;
+                wordIndex++;
+                if (wordIndex >= 3) {
+                    currentLevel++;
+                    wordIndex = 0;
+                    lvlValEl.innerText = currentLevel;
+                }
+                loadWord();
+            }
+            updateProgressBar();
+        });
+
+        function updateProgressBar() {
+            const currentTarget = targetWordEl.innerText;
+            const typed = userInputEl.value;
+            const percentage = (typed.length / currentTarget.length) * 100;
+            progressBarEl.style.width = `${Math.min(percentage, 100)}%`;
+        }
+
+        // لوحة الأدمن
+        function openAdminModal() { document.getElementById('adminModal').style.display = 'flex'; }
+        function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
+
+        function authenticateAdmin() {
+            const pass = document.getElementById('adminPass').value;
+            if (pass === "mazenlazangg77") {
+                document.getElementById('adminAuth').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+            } else {
+                alert("كلمة السر خاطئة!");
+            }
+        }
+
+        /* ووظائف الـ Admin Abuse والأحداث */
+        function triggerEvent(eventName, mult) {
+            eventMultiplier = mult;
+            const banner = document.getElementById('eventBanner');
+            banner.innerText = `🔥 حدث نشط: ${eventName} (مضاعف x${mult}) 🔥`;
+            banner.style.display = 'block';
+            updateMultiplierDisplay();
+        }
+
+        function stopEvent() {
+            eventMultiplier = 1;
+            document.getElementById('eventBanner').style.display = 'none';
+            updateMultiplierDisplay();
+        }
+
+        function toggleSecretRoom() {
+            const room = document.getElementById('secretRoom');
+            room.style.display = room.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function claimSecretBonus() {
+            speed += 50000;
+            speedValEl.innerText = speed;
+            alert("تم إضافة +50,000 سرعة من الغرفة السرية!");
+        }
+
+        function adminSetMultiplier(val) {
+            baseMultiplier = val;
+            updateMultiplierDisplay();
+        }
+
+        function updateMultiplierDisplay() {
+            multValEl.innerText = `${baseMultiplier * eventMultiplier}x`;
+        }
+
+        function adminAddSpeed(amount) {
+            speed += amount;
+            speedValEl.innerText = speed;
+        }
+
+        function adminSkipLevel() {
+            currentLevel++;
+            wordIndex = 0;
+            lvlValEl.innerText = currentLevel;
+            loadWord();
+        }
+
+        function adminReset() {
+            speed = 0;
+            baseMultiplier = 1;
+            eventMultiplier = 1;
+            speedValEl.innerText = 0;
+            updateMultiplierDisplay();
+        }
+
+        loadWord();
+    </script>
+</body>
+</html>
